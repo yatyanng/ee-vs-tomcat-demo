@@ -1,0 +1,15 @@
+meta {
+  name: create-book (tomcat)
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8081/tomcat-thirdparty-demo-1.0.0-SNAPSHOT/api/books
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {"title": "Effective Java", "isbn": "978-0134685991"}
+}

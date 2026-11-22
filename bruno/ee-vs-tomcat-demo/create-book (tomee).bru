@@ -1,0 +1,19 @@
+meta {
+  name: create-book (tomee)
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8080/tomee-ee-demo-1.0.0-SNAPSHOT/api/books
+  body: json
+  auth: inherit
+}
+
+headers {
+  : 
+}
+
+body:json {
+  {"title": "Effective Java", "isbn": "978-0134685991"}
+}

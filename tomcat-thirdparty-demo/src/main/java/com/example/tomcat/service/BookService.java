@@ -1,60 +1,38 @@
 package com.example.tomcat.service;
 
 import com.example.tomcat.entity.Book;
-import com.example.tomcat.interceptor.Audited;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Validator;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.Marshaller;
-import java.io.StringWriter;
-import java.util.List;
-import java.util.Set;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+import jakarta.validation.Valid;
 
-@ApplicationScoped
-@Audited
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+
+@Service
+@Validated
 public class BookService {
 
-    @Inject
+    @PersistenceContext
     private EntityManager em;
 
-    @Inject
-    private Validator validator;
-
-    public Book create(Book book) {
-        // Explicit Bean Validation check (Hibernate Validator)
-        Set<ConstraintViolation<Book>> violations = validator.validate(book);
-        if (!violations.isEmpty()) {
-            throw new ConstraintViolationException(violations);
-        }
-
-        // Manual RESOURCE_LOCAL transaction boundary (or use Narayana JTA for @Transactional)
-        em.getTransaction().begin();
-        try {
-            em.persist(book);
-            em.getTransaction().commit();
-            return book;
-        } catch (Exception e) {
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
-            throw e;
-        }
+    @Transactional
+    public Book create(@Valid Book book) {
+        em.persist(book);
+        return book;
     }
-
-    public List<Book> findAll() {
-        return em.createQuery("SELECT b FROM Book b", Book.class).getResultList();
-    }
-
-    public String toXml(Book book) throws Exception {
-        JAXBContext context = JAXBContext.newInstance(Book.class);
-        Marshaller marshaller = context.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        StringWriter writer = new StringWriter();
-        marshaller.marshal(book, writer);
-        return writer.toString();
+    
+    public List<Book> list() {
+    	CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Book> cq = cb.createQuery(Book.class);
+        Root<Book> rootEntry = cq.from(Book.class);
+        CriteriaQuery<Book> all = cq.select(rootEntry);
+        
+        return em.createQuery(all).getResultList();
     }
 }

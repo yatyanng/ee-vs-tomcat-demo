@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "ee-vs-tomcat-demo",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

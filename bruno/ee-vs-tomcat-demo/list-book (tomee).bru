@@ -1,0 +1,19 @@
+meta {
+  name: list-book (tomee)
+  type: http
+  seq: 5
+}
+
+get {
+  url: http://localhost:8080/tomee-ee-demo-1.0.0-SNAPSHOT/api/books
+  body: none
+  auth: inherit
+}
+
+headers {
+  : 
+}
+
+body:json {
+  {"title": "Effective Java", "isbn": "978-0134685991"}
+}
