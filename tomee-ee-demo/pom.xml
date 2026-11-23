@@ -22,4 +22,31 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-xjc-plugin</artifactId>
+                <version>4.2.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-jaxb-classes</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>xsdtojava</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <xsdOptions>
+                        <xsdOption>
+                            <xsd>${project.basedir}/src/main/resources/book.xsd</xsd>
+                            <packagename>com.example.tomee.generated</packagename>
+                        </xsdOption>
+                    </xsdOptions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
